@@ -3,7 +3,7 @@ snake in terminal on python
 
 Try to get highest score (Currently Game only in Ukrainian lang)
 
-Controls:\n
+Controls:
 -left arrow to move left
 -right arrow to move right
 -up arrow to move top
