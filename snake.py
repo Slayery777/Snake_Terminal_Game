@@ -12,6 +12,7 @@ def main(score = None):
     menu_buttons = [("Почати гру", start_game), ("Вихід", sys.exit)]
     menu_buttons_len = len(menu_buttons)-1
     selected_button = 0
+
     columns, lines = shutil.get_terminal_size(fallback=())
 
     if score:
@@ -44,12 +45,10 @@ def main(score = None):
 
 def restart_menu(score):
     os.system('cls' if os_name == 'nt' else 'clear')
-    menu_buttons = [("Заново", start_game), 
-                    ("Головне меню", main), ("Вихід", sys.exit)]
+    menu_buttons = [("Заново", start_game), ("Головне меню", main), ("Вихід", sys.exit)]
     menu_buttons_len = len(menu_buttons)-1
     selected_button = 0
     columns, lines = shutil.get_terminal_size(fallback=())
-
     if score:
         print(f"\033[{lines//2-1};{columns//2}H|END WITH SCORE: {score}|")
     for i, button in enumerate(menu_buttons):
@@ -79,9 +78,10 @@ def restart_menu(score):
                 print(f"\033[{(lines//2+i)};{columns//2}H {button_name}")
 
 def start_game():
-    snake_segments_XY = [(0, 0)]
+    columns, lines = shutil.get_terminal_size(fallback=())
+    snake_segments_XY = [(lines//2, columns//2)]
 
-    appleXY = [(0,0)]
+    appleXY = [(random.randint(0, lines),random.randint(0, columns))]
     apple = "X"
 
     Xspeed = 1
