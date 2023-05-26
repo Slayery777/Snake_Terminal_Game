@@ -79,20 +79,20 @@ def restart_menu(score):
                 print(f"\033[{(lines//2+i)};{columns//2}H {button_name}")
 
 def start_game():
-    snake = [(0, 0)]
-
+    snake_segments_XY = [(0, 0)]
 
     appleXY = [(0,0)]
     apple = "X"
 
     Xspeed = 1
-    Yspeed = 0.5
+    Yspeed = 0.6
 
     score = 0
 
     last_key_pressed = "right"
+    last_segment = snake_segments_XY[-1]
+
     os.system('cls' if os_name == 'nt' else 'clear')
-    last_segment = snake[-1]
     while(True):
         if keyboard.is_pressed('up') and last_key_pressed != 'down':
             last_key_pressed = "up"
@@ -103,58 +103,58 @@ def start_game():
         elif keyboard.is_pressed('right') and last_key_pressed != 'left':
             last_key_pressed = "right"
         columns, lines = shutil.get_terminal_size(fallback=())
-        aspect_ratio = lines/columns
-        if snake[0] == appleXY[0]:
+        if tuple(map(int, snake_segments_XY[0])) == appleXY[0]:
             appleXY = [(random.randint(0, lines),random.randint(0, columns))]
             # calculate the position of the new segment
-            last_segment = snake[-1]
+            last_segment = snake_segments_XY[-1]
             new_segment = (last_segment[0], last_segment[1]-1)
-            # add the new segment to the snake
-            snake.append(new_segment)
+            # add the new segment to the snake_segments_XY
+            snake_segments_XY.append(new_segment)
             score+=1
-        last_segment = snake[-1]
+        last_segment = snake_segments_XY[-1]
         if last_key_pressed == "down":
-            if snake[0][0] < lines:
-                for i in range(len(snake)-1, 0, -1):
-                    snake[i] = snake[i-1]
-                snake[0] = (snake[0][0]+Yspeed, snake[0][1])
+            if snake_segments_XY[0][0] < lines:
+                for i in range(len(snake_segments_XY)-1, 0, -1):
+                    snake_segments_XY[i] = snake_segments_XY[i-1]
+                snake_segments_XY[0] = (snake_segments_XY[0][0]+Yspeed, snake_segments_XY[0][1])
             else:
-                for i in range(len(snake)-1, 0, -
+                for i in range(len(snake_segments_XY)-1, 0, -
                                1):
-                    snake[i] = snake[i-1]
-                snake[0] = (0,snake[0][1])
+                    snake_segments_XY[i] = snake_segments_XY[i-1]
+                snake_segments_XY[0] = (0,snake_segments_XY[0][1])
         if last_key_pressed == "up":
-            if snake[0][0] > 0:
-                for i in range(len(snake)-1, 0, -1):
-                    snake[i] = snake[i-1]
-                snake[0] = (snake[0][0]-Yspeed, snake[0][1])
+            if snake_segments_XY[0][0] > 0:
+                for i in range(len(snake_segments_XY)-1, 0, -1):
+                    snake_segments_XY[i] = snake_segments_XY[i-1]
+                snake_segments_XY[0] = (snake_segments_XY[0][0]-Yspeed, snake_segments_XY[0][1])
             else:
-                for i in range(len(snake)-1, 0, -1):
-                    snake[i] = snake[i-1]
-                snake[0] = (lines,snake[0][1])
+                for i in range(len(snake_segments_XY)-1, 0, -1):
+                    snake_segments_XY[i] = snake_segments_XY[i-1]
+                snake_segments_XY[0] = (lines,snake_segments_XY[0][1])
         if last_key_pressed == "right":
-            if snake[0][1] <= columns:
-                for i in range(len(snake)-1, 0, -1):
-                    snake[i] = snake[i-1]
-                snake[0] = (snake[0][0], snake[0][1]+1)
+            if snake_segments_XY[0][1] <= columns:
+                for i in range(len(snake_segments_XY)-1, 0, -1):
+                    snake_segments_XY[i] = snake_segments_XY[i-1]
+                snake_segments_XY[0] = (snake_segments_XY[0][0], snake_segments_XY[0][1]+1)
             else:
-                for i in range(len(snake)-1, 0, -1):
-                    snake[i] = snake[i-1]
-                snake[0] = (snake[0][0],0)
+                for i in range(len(snake_segments_XY)-1, 0, -1):
+                    snake_segments_XY[i] = snake_segments_XY[i-1]
+                snake_segments_XY[0] = (snake_segments_XY[0][0],0)
         if last_key_pressed == "left":
-            if snake[0][1] >= 0:
-                for i in range(len(snake)-1, 0, -1):
-                    snake[i] = snake[i-1]
-                snake[0] = (snake[0][0], snake[0][1]-1)
+            if snake_segments_XY[0][1] >= 0:
+                for i in range(len(snake_segments_XY)-1, 0, -1):
+                    snake_segments_XY[i] = snake_segments_XY[i-1]
+                snake_segments_XY[0] = (snake_segments_XY[0][0], snake_segments_XY[0][1]-1)
             else:
-                for i in range(len(snake)-1, 0, -1):
-                    snake[i] = snake[i-1]
-                snake[0] = (snake[0][0],columns)
-        if len(snake) != len(set(snake)):
+                for i in range(len(snake_segments_XY)-1, 0, -1):
+                    snake_segments_XY[i] = snake_segments_XY[i-1]
+                snake_segments_XY[0] = (snake_segments_XY[0][0],columns)
+        relative_snake_segments_XY = [(int(x), int(y)) for x, y in snake_segments_XY]
+        if len(snake_segments_XY) != len(set(snake_segments_XY)):
             restart_menu(score)
         print(f"\033[{0};{0}H|Score: {score}|")
         print(f'\033[{int(last_segment[0])};{last_segment[1]}H ', end='')
-        for segment in snake:
+        for segment in relative_snake_segments_XY:
             print(f'\033[{int(segment[0])};{segment[1]}H■', end='')
         print(f"\033[{appleXY[0][0]};{appleXY[0][1]}H{apple}", end='')
         time.sleep(0.05)
