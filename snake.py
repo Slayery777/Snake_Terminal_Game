@@ -6,7 +6,7 @@ import time
 import keyboard
 
 os_name = os.name
-
+#check
 def main(score = None):
     os.system('cls' if os_name == 'nt' else 'clear')
     menu_buttons = [("Почати гру", start_game), ("Вихід", sys.exit)]
