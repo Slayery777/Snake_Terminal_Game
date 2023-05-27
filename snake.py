@@ -9,7 +9,7 @@ os_name = os.name
 
 def main(score = None):
     os.system('cls' if os_name == 'nt' else 'clear')
-    menu_buttons = [("Почати гру", start_game), ("Вихід", sys.exit)]
+    menu_buttons = [("Start Game", start_game), ("Quit", sys.exit)]
     menu_buttons_len = len(menu_buttons)-1
     selected_button = 0
 
@@ -23,6 +23,7 @@ def main(score = None):
             print(f"\033[{(lines//2+i)};{columns//2}H>{button_name}")
         else:
             print(f"\033[{(lines//2+i)};{columns//2}H {button_name}")
+    print(f"\033[{(lines-1)};{0}H" + "Snake v0.1 (2023)")
     while(True):
         event = keyboard.read_event()
         columns, lines = shutil.get_terminal_size(fallback=())
@@ -45,7 +46,7 @@ def main(score = None):
 
 def restart_menu(score):
     os.system('cls' if os_name == 'nt' else 'clear')
-    menu_buttons = [("Заново", start_game), ("Головне меню", main), ("Вихід", sys.exit)]
+    menu_buttons = [("Retry", start_game), ("Main menu", main), ("Exit", sys.exit)]
     menu_buttons_len = len(menu_buttons)-1
     selected_button = 0
     columns, lines = shutil.get_terminal_size(fallback=())
