@@ -16,7 +16,7 @@ def main(score = None):
     columns, lines = shutil.get_terminal_size(fallback=())
 
     if score:
-        print(f"\033[{lines//2-1};{columns//2}H|END WITH SCORE: {score}|")
+        print(f"\033[{lines//2-1};{columns//2}H"+f"|END WITH SCORE: {score}|")
     for i, button in enumerate(menu_buttons):
         button_name, button_function = button
         if i == selected_button:
@@ -80,6 +80,13 @@ def restart_menu(score):
 
 def start_game():
     columns, lines = shutil.get_terminal_size(fallback=())
+
+    
+    left_box_side_pos = 11
+    right_bot_side_pos = columns - 11
+    min_columns_position = left_box_side_pos + 1
+    max_columns_position = right_bot_side_pos - 1
+
     snake_segments_XY = [(lines//2, columns//2)]
 
     appleXY = [(random.randint(0, lines),random.randint(0, columns))]
@@ -89,6 +96,7 @@ def start_game():
     Yspeed = 0.6
 
     score = 0
+
 
     last_key_pressed = "right"
     last_segment = snake_segments_XY[-1]
@@ -103,9 +111,14 @@ def start_game():
             last_key_pressed = "left"
         elif keyboard.is_pressed('right') and last_key_pressed != 'left':
             last_key_pressed = "right"
-        columns, lines = shutil.get_terminal_size(fallback=())
+        if (columns, lines) != shutil.get_terminal_size(fallback=()):
+            columns, lines = shutil.get_terminal_size(fallback=())
+            left_box_side_pos = 11
+            right_bot_side_pos = columns - 11
+            min_columns_position = left_box_side_pos + 1
+            max_columns_position = right_bot_side_pos - 1
         if tuple(map(int, snake_segments_XY[0])) == appleXY[0]:
-            appleXY = [(random.randint(0, lines),random.randint(0, columns))]
+            appleXY = [(random.randint(0, lines),random.randint(min_columns_position, max_columns_position))]
             # calculate the position of the new segment
             last_segment = snake_segments_XY[-1]
             new_segment = (last_segment[0], last_segment[1]-1)
@@ -119,8 +132,7 @@ def start_game():
                     snake_segments_XY[i] = snake_segments_XY[i-1]
                 snake_segments_XY[0] = (snake_segments_XY[0][0]+Yspeed, snake_segments_XY[0][1])
             else:
-                for i in range(len(snake_segments_XY)-1, 0, -
-                               1):
+                for i in range(len(snake_segments_XY)-1, 0, -1):
                     snake_segments_XY[i] = snake_segments_XY[i-1]
                 snake_segments_XY[0] = (0,snake_segments_XY[0][1])
         if last_key_pressed == "up":
@@ -133,27 +145,30 @@ def start_game():
                     snake_segments_XY[i] = snake_segments_XY[i-1]
                 snake_segments_XY[0] = (lines,snake_segments_XY[0][1])
         if last_key_pressed == "right":
-            if snake_segments_XY[0][1] <= columns:
+            if snake_segments_XY[0][1] <= max_columns_position:
                 for i in range(len(snake_segments_XY)-1, 0, -1):
                     snake_segments_XY[i] = snake_segments_XY[i-1]
                 snake_segments_XY[0] = (snake_segments_XY[0][0], snake_segments_XY[0][1]+1)
             else:
                 for i in range(len(snake_segments_XY)-1, 0, -1):
                     snake_segments_XY[i] = snake_segments_XY[i-1]
-                snake_segments_XY[0] = (snake_segments_XY[0][0],0)
+                snake_segments_XY[0] = (snake_segments_XY[0][0],min_columns_position)
         if last_key_pressed == "left":
-            if snake_segments_XY[0][1] >= 0:
+            if snake_segments_XY[0][1] >= min_columns_position:
                 for i in range(len(snake_segments_XY)-1, 0, -1):
                     snake_segments_XY[i] = snake_segments_XY[i-1]
                 snake_segments_XY[0] = (snake_segments_XY[0][0], snake_segments_XY[0][1]-1)
             else:
                 for i in range(len(snake_segments_XY)-1, 0, -1):
                     snake_segments_XY[i] = snake_segments_XY[i-1]
-                snake_segments_XY[0] = (snake_segments_XY[0][0],columns)
+                snake_segments_XY[0] = (snake_segments_XY[0][0],max_columns_position)
         relative_snake_segments_XY = [(int(x), int(y)) for x, y in snake_segments_XY]
         if len(snake_segments_XY) != len(set(snake_segments_XY)):
             restart_menu(score)
-        print(f"\033[{0};{0}H|Score: {score}|")
+        for i in range(lines):
+            print(f"\033[{i};{left_box_side_pos}H" + "|")
+            print(f"\033[{i};{right_bot_side_pos}H" + "|")
+        print(f"\033[{lines//2};{0}H|Score: {score}|")
         print(f'\033[{int(last_segment[0])};{last_segment[1]}H ', end='')
         for segment in relative_snake_segments_XY:
             print(f'\033[{int(segment[0])};{segment[1]}H■', end='')
