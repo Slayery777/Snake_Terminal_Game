@@ -141,9 +141,8 @@ def start_game():
     right_bot_side_pos = columns - left_box_side_pos
     min_columns_position = left_box_side_pos + 3
     max_columns_position = right_bot_side_pos - 3
-    min_lines_position = top_box_side_pos + 2
+    min_lines_position = top_box_side_pos + 3
     max_lines_position = bottom_box_side_pos - 1
-
 
     snake_segments_XY = [(lines//2, columns//2)]
 
