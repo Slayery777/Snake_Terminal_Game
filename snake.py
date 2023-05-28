@@ -26,7 +26,7 @@ def main(score = None):
             print(f"\033[{(lines//2+i)};{columns//2-(len(button_name))//2}H {button_name} ",end='')
     print(f"\033[{(lines-2)};{0}H" + "Menu Controls:",end='')
     print(f"\033[{(lines-1)};{0}H" + "Arrow UP, Arrow DOWN, W, S, ENTER",end='')
-    print(f"\033[{(lines)};{0}H" + "Snake v0.3 (2023)",end='')
+    print(f"\033[{(lines)};{0}H" + "Snake v0.4 (2023)",end='')
     sys.stdout.flush()
     while(True):
         event = keyboard.read_event()
@@ -137,17 +137,17 @@ def start_game():
 
     top_box_side_pos = 0
     bottom_box_side_pos = lines
-    left_box_side_pos = 11
+    left_box_side_pos = 12
     right_bot_side_pos = columns - left_box_side_pos
-    min_columns_position = left_box_side_pos + 2
-    max_columns_position = right_bot_side_pos - 2
+    min_columns_position = left_box_side_pos + 3
+    max_columns_position = right_bot_side_pos - 3
     min_lines_position = top_box_side_pos + 2
     max_lines_position = bottom_box_side_pos - 1
 
 
     snake_segments_XY = [(lines//2, columns//2)]
 
-    appleXY = [(random.randint(0, lines),random.randint(min_columns_position, max_columns_position))]
+    appleXY = [(random.randint(0, max_lines_position),random.randint(min_columns_position, max_columns_position))]
     apple = "O"
 
     Xspeed = 1
@@ -226,9 +226,11 @@ def start_game():
         for i in range(lines+1):
             print(f"\033[{i};{left_box_side_pos}H" + "█",end='')
             print(f"\033[{i};{right_bot_side_pos}H" + "█",end='')
+            print(f"\033[{i};{left_box_side_pos-1}H" + "█",end='')
+            print(f"\033[{i};{right_bot_side_pos-1}H" + "█",end='')
         for i in range(left_box_side_pos + 1, right_bot_side_pos):
-            print(f"\033[{top_box_side_pos};{i}H" + "▀", end='')
-            print(f"\033[{bottom_box_side_pos};{i}H" + "▄", end='')
+            print(f"\033[{top_box_side_pos};{i}H" + "█", end='')
+            print(f"\033[{bottom_box_side_pos};{i}H" + "█", end='')
         print(f"\033[{lines//2};{0}HScore: {score}")
         print(f'\033[{int(last_segment[0])};{last_segment[1]}H ', end='')
         for segment in relative_snake_segments_XY:
