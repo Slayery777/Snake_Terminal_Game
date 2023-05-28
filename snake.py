@@ -20,10 +20,10 @@ def main(score = None):
     for i, button in enumerate(menu_buttons):
         button_name, button_function = button
         if i == selected_button:
-            print(f"\033[{(lines//2+i)};{columns//2}H>{button_name}")
+            print(f"\033[{(lines//2+i)};{columns//2-(len(button_name))//2}H>{button_name}<")
         else:
-            print(f"\033[{(lines//2+i)};{columns//2}H {button_name}")
-    print(f"\033[{(lines-1)};{0}H" + "Snake v0.1 (2023)")
+            print(f"\033[{(lines//2+i)};{columns//2-(len(button_name))//2}H {button_name} ")
+    print(f"\033[{(lines-1)};{0}H" + "Snake v0.2 (2023)")
     while(True):
         event = keyboard.read_event()
         columns, lines = shutil.get_terminal_size(fallback=())
@@ -40,9 +40,9 @@ def main(score = None):
             if event.name == 'enter' and event.event_type == 'up' and i == selected_button:
                 button_function()
             if i == selected_button:
-                print(f"\033[{(lines//2+i)};{columns//2}H>{button_name}")
+                print(f"\033[{(lines//2+i)};{columns//2-(len(button_name))//2}H>{button_name}<")
             else:
-                print(f"\033[{(lines//2+i)};{columns//2}H {button_name}")
+                print(f"\033[{(lines//2+i)};{columns//2-(len(button_name))//2}H {button_name} ")
 
 def restart_menu(score):
     os.system('cls' if os_name == 'nt' else 'clear')
@@ -50,14 +50,27 @@ def restart_menu(score):
     menu_buttons_len = len(menu_buttons)-1
     selected_button = 0
     columns, lines = shutil.get_terminal_size(fallback=())
-    if score:
-        print(f"\033[{lines//2-1};{columns//2}H|END WITH SCORE: {score}|")
+    filename = 'max_score.bin'
+    max_score = None
+    if not os.path.exists(filename):
+        with open(filename, 'wb') as f:
+            f.write((0).to_bytes(4, byteorder='big'))
+    with open(filename, 'rb') as f:
+        max_score = int.from_bytes(f.read(4), byteorder='big')
+    if score > max_score:
+        with open(filename, 'wb') as f:
+            f.write(score.to_bytes(4, byteorder='big'))
+        max_score = score
+    print_line_len = len(f"|MAX SCORE: {max_score}|")
+    print(f"\033[{lines//2-2};{columns//2-print_line_len//2}H|MAX SCORE: {max_score}|")
+    print_line_len = len(f"|END WITH SCORE: {score}|")
+    print(f"\033[{lines//2-1};{columns//2-print_line_len//2}H|END WITH SCORE: {score}|")
     for i, button in enumerate(menu_buttons):
         button_name, button_function = button
         if i == selected_button:
-            print(f"\033[{(lines//2+i)};{columns//2}H>{button_name}")
+            print(f"\033[{(lines//2+i)};{columns//2-(len(button_name))//2}H>{button_name}<")
         else:
-            print(f"\033[{(lines//2+i)};{columns//2}H {button_name}")
+            print(f"\033[{(lines//2+i)};{columns//2-(len(button_name))//2}H {button_name} ")
     while(True):
         event = keyboard.read_event()
         columns, lines = shutil.get_terminal_size(fallback=())
@@ -74,9 +87,9 @@ def restart_menu(score):
             if event.name == 'enter' and event.event_type == 'up' and i == selected_button:
                 button_function()
             if i == selected_button:
-                print(f"\033[{(lines//2+i)};{columns//2}H>{button_name}")
+                print(f"\033[{(lines//2+i)};{columns//2-(len(button_name))//2}H>{button_name}<")
             else:
-                print(f"\033[{(lines//2+i)};{columns//2}H {button_name}")
+                print(f"\033[{(lines//2+i)};{columns//2-(len(button_name))//2}H {button_name} ")
 
 def start_game():
     columns, lines = shutil.get_terminal_size(fallback=())
@@ -168,7 +181,7 @@ def start_game():
         for i in range(lines):
             print(f"\033[{i};{left_box_side_pos}H" + "|")
             print(f"\033[{i};{right_bot_side_pos}H" + "|")
-        print(f"\033[{lines//2};{0}H|Score: {score}|")
+        print(f"\033[{lines//2};{0}HScore: {score}")
         print(f'\033[{int(last_segment[0])};{last_segment[1]}H ', end='')
         for segment in relative_snake_segments_XY:
             print(f'\033[{int(segment[0])};{segment[1]}H■', end='')
