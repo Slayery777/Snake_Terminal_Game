@@ -25,16 +25,16 @@ def main(score = None):
         else:
             print(f"\033[{(lines//2+i)};{columns//2-(len(button_name))//2}H {button_name} ")
     print(f"\033[{(lines-3)};{0}H" + "Menu Controls:")
-    print(f"\033[{(lines-2)};{0}H" + "Arrow UP, Arrow DOWN, ENTER")
-    print(f"\033[{(lines-1)};{0}H" + "Snake v0.2 (2023)")
+    print(f"\033[{(lines-2)};{0}H" + "Arrow UP, Arrow DOWN, W, S, ENTER")
+    print(f"\033[{(lines-1)};{0}H" + "Snake v0.3 (2023)")
     while(True):
         event = keyboard.read_event()
         columns, lines = shutil.get_terminal_size(fallback=())
-        if event.name == 'up' and event.event_type == 'up':
+        if event.name == 'up' and event.event_type == 'up' or event.name == 'w' and event.event_type  == 'up' or event.name == 'ц' and event.event_type  == 'up':
             selected_button-=1
             if selected_button < 0:
                 selected_button = menu_buttons_len
-        elif event.name == 'down' and event.event_type == 'up':
+        elif event.name == 'down' and event.event_type == 'up' or event.name == 's' and event.event_type  == 'up' or event.name == 'ы' and event.event_type  == 'up':
             selected_button+=1
             if selected_button > menu_buttons_len:
                 selected_button = 0
@@ -49,7 +49,7 @@ def main(score = None):
 
 def help_menu():
     os.system('cls' if os_name == 'nt' else 'clear')
-    help_articles = ["Keyboard Bindings:","Menu - arrow UP, arrow DOWN, ENTER","Snake - arrow UP,arrow DOWN,arrow LEFT,arrow RIGHT","How To Play:","Your task is to eat as many apples as possible (indicated by the symbol O)","And make sure that the snake does not touch itself."]
+    help_articles = ["Keyboard Bindings:","Menu - arrow UP, arrow DOWN, W, S, ENTER","Snake - arrow UP, arrow DOWN, arrow LEFT, arrow RIGHT or W, A, S, D","How To Play:","Your task is to eat as many apples as possible (indicated by the symbol O)","And make sure that the snake does not touch itself."]
     menu_buttons = [("Main menu", main)]
     max_article_len = len(max(help_articles, key=len))
     help_articles_len = len(help_articles)
@@ -67,11 +67,11 @@ def help_menu():
     while(True):
         event = keyboard.read_event()
         columns, lines = shutil.get_terminal_size(fallback=())
-        if event.name == 'up' and event.event_type == 'up':
+        if event.name == 'up' and event.event_type == 'up' or event.name == 'w' and event.event_type  == 'up' or event.name == 'ц' and event.event_type  == 'up':
             selected_button-=1
             if selected_button < 0:
                 selected_button = menu_buttons_len
-        elif event.name == 'down' and event.event_type == 'up':
+        elif event.name == 'down' and event.event_type == 'up' or event.name == 's' and event.event_type  == 'up' or event.name == 'ы' and event.event_type  == 'up':
             selected_button+=1
             if selected_button > menu_buttons_len:
                 selected_button = 0
@@ -114,11 +114,11 @@ def restart_menu(score):
     while(True):
         event = keyboard.read_event()
         columns, lines = shutil.get_terminal_size(fallback=())
-        if event.name == 'up' and event.event_type == 'up':
+        if event.name == 'up' and event.event_type == 'up' or event.name == 'w' and event.event_type  == 'up' or event.name == 'ц' and event.event_type  == 'up':
             selected_button-=1
             if selected_button < 0:
                 selected_button = menu_buttons_len
-        elif event.name == 'down' and event.event_type == 'up':
+        elif event.name == 'down' and event.event_type == 'up' or event.name == 's' and event.event_type  == 'up' or event.name == 'ы' and event.event_type  == 'up':
             selected_button+=1
             if selected_button > menu_buttons_len:
                 selected_button = 0
@@ -151,19 +151,19 @@ def start_game():
     score = 0
 
 
-    last_key_pressed = "right"
+    last_key_direction = "right"
     last_segment = snake_segments_XY[-1]
 
     os.system('cls' if os_name == 'nt' else 'clear')
     while(True):
-        if keyboard.is_pressed('up') and last_key_pressed != 'down':
-            last_key_pressed = "up"
-        elif keyboard.is_pressed('down') and last_key_pressed != 'up':
-            last_key_pressed = "down"
-        elif keyboard.is_pressed('left') and last_key_pressed != 'right':
-            last_key_pressed = "left"
-        elif keyboard.is_pressed('right') and last_key_pressed != 'left':
-            last_key_pressed = "right"
+        if keyboard.is_pressed('up') and last_key_direction != 'down' or keyboard.is_pressed('w') and last_key_direction != 'down' or keyboard.is_pressed('ц') and last_key_direction != 'down':
+            last_key_direction = "up"
+        elif keyboard.is_pressed('down') and last_key_direction != 'up' or keyboard.is_pressed('s') and last_key_direction != 'up' or keyboard.is_pressed('ы') and last_key_direction != 'up':
+            last_key_direction = "down"
+        elif keyboard.is_pressed('left') and last_key_direction != 'right' or keyboard.is_pressed('a') and last_key_direction != 'right' or keyboard.is_pressed('ф') and last_key_direction != 'right':
+            last_key_direction = "left"
+        elif keyboard.is_pressed('right') and last_key_direction != 'left' or keyboard.is_pressed('d') and last_key_direction != 'left' or keyboard.is_pressed('в') and last_key_direction != 'left':
+            last_key_direction = "right"
         if (columns, lines) != shutil.get_terminal_size(fallback=()):
             columns, lines = shutil.get_terminal_size(fallback=())
             left_box_side_pos = 11
@@ -179,7 +179,7 @@ def start_game():
             snake_segments_XY.append(new_segment)
             score+=1
         last_segment = snake_segments_XY[-1]
-        if last_key_pressed == "down":
+        if last_key_direction == "down":
             if snake_segments_XY[0][0] < lines:
                 for i in range(len(snake_segments_XY)-1, 0, -1):
                     snake_segments_XY[i] = snake_segments_XY[i-1]
@@ -188,7 +188,7 @@ def start_game():
                 for i in range(len(snake_segments_XY)-1, 0, -1):
                     snake_segments_XY[i] = snake_segments_XY[i-1]
                 snake_segments_XY[0] = (0,snake_segments_XY[0][1])
-        if last_key_pressed == "up":
+        if last_key_direction == "up":
             if snake_segments_XY[0][0] > 0:
                 for i in range(len(snake_segments_XY)-1, 0, -1):
                     snake_segments_XY[i] = snake_segments_XY[i-1]
@@ -197,7 +197,7 @@ def start_game():
                 for i in range(len(snake_segments_XY)-1, 0, -1):
                     snake_segments_XY[i] = snake_segments_XY[i-1]
                 snake_segments_XY[0] = (lines,snake_segments_XY[0][1])
-        if last_key_pressed == "right":
+        if last_key_direction == "right":
             if snake_segments_XY[0][1] <= max_columns_position:
                 for i in range(len(snake_segments_XY)-1, 0, -1):
                     snake_segments_XY[i] = snake_segments_XY[i-1]
@@ -206,7 +206,7 @@ def start_game():
                 for i in range(len(snake_segments_XY)-1, 0, -1):
                     snake_segments_XY[i] = snake_segments_XY[i-1]
                 snake_segments_XY[0] = (snake_segments_XY[0][0],min_columns_position)
-        if last_key_pressed == "left":
+        if last_key_direction == "left":
             if snake_segments_XY[0][1] >= min_columns_position:
                 for i in range(len(snake_segments_XY)-1, 0, -1):
                     snake_segments_XY[i] = snake_segments_XY[i-1]
