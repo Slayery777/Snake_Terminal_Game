@@ -1,10 +1,18 @@
 # Snake_Terminal_Game
-snake in terminal on python
+Snake in terminal on python
 
-Try to get highest score
+|How to Install|
+1. Download latest release rar
+2. Unzip rar
+3. Run snake.exe 
 
-Controls:
--left arrow to move left
--right arrow to move right
--up arrow to move top
--down arrow to move down
+|Controls|
+Menu:
+- UP arrow, DOWN arrow, ENTER
+- W, S
+Snake:
+- LEFT arrow, RIGHT arrow, UP arrow, DOWN arrow
+- W, A, S, D
+
+|How To play|
+Your task is to eat as many apples as possible (indicated by the symbol O), And make sure that the snake does not touch itself.
