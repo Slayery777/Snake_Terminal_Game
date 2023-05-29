@@ -7,10 +7,10 @@ Snake in terminal on python
 3. Run snake.exe 
 
 |Controls|
-Menu:
+1. Menu:
 - UP arrow, DOWN arrow, ENTER
 - W, S
-Snake:
+2. Snake:
 - LEFT arrow, RIGHT arrow, UP arrow, DOWN arrow
 - W, A, S, D
 
