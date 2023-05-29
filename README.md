@@ -15,4 +15,4 @@ Snake in terminal on python
 - W, A, S, D
 
 |How To play|
-Your task is to eat as many apples as possible (indicated by the symbol O), And make sure that the snake does not touch itself.
+- Your task is to eat as many apples as possible (indicated by the symbol O), And make sure that the snake does not touch itself.
