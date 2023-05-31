@@ -4,11 +4,16 @@ import shutil
 import sys
 import time
 import keyboard
+import pygame
 
 os_name = os.name
 
 def main(score = None):
     os.system('cls' if os_name == 'nt' else 'clear')
+    # Initialize pygame mixer
+    pygame.mixer.init()
+    sound_menu_roll = pygame.mixer.Sound('sounds/menu-roll.mp3')
+    sound_menu_enter = pygame.mixer.Sound('sounds/menu-enter.mp3')
     menu_buttons = [("Start Game", start_game),("Help", help_menu), ("Exit", sys.exit)]
     menu_buttons_len = len(menu_buttons)-1
     
@@ -32,16 +37,19 @@ def main(score = None):
         event = keyboard.read_event()
         columns, lines = shutil.get_terminal_size(fallback=())
         if event.name == 'up' and event.event_type == 'up' or event.name == 'w' and event.event_type  == 'up' or event.name == 'ц' and event.event_type  == 'up':
+            sound_menu_roll.play()
             selected_button-=1
             if selected_button < 0:
                 selected_button = menu_buttons_len
         elif event.name == 'down' and event.event_type == 'up' or event.name == 's' and event.event_type  == 'up' or event.name == 'ы' and event.event_type  == 'up':
+            sound_menu_roll.play()
             selected_button+=1
             if selected_button > menu_buttons_len:
                 selected_button = 0
         for i, button in enumerate(menu_buttons):
             button_name, button_function = button
             if event.name == 'enter' and event.event_type == 'up' and i == selected_button:
+                sound_menu_enter.play()
                 button_function()
             if i == selected_button:
                 print(f"\033[{(lines//2+i)};{columns//2-(len(button_name))//2}H>{button_name}<")
@@ -50,10 +58,13 @@ def main(score = None):
 
 def help_menu():
     os.system('cls' if os_name == 'nt' else 'clear')
+    # Initialize pygame mixer
+    pygame.mixer.init()
+    sound_menu_enter = pygame.mixer.Sound('sounds/menu-enter.mp3')
     help_articles = ["Keyboard Bindings:","Menu - arrow UP, arrow DOWN, W, S, ENTER","Snake - arrow UP, arrow DOWN, arrow LEFT, arrow RIGHT or W, A, S, D","How To Play:","Your task is to eat as many apples as possible (indicated by the symbol O)","And make sure that the snake does not touch itself."]
     menu_buttons = [("Main menu", main)]
     max_article_len = len(max(help_articles, key=len))
-    help_articles_len = len(help_articles)
+    help_articles_len = len(help_articles)+1
     menu_buttons_len = len(menu_buttons)-1
     selected_button = 0
     columns, lines = shutil.get_terminal_size(fallback=())
@@ -79,6 +90,7 @@ def help_menu():
         for i, button in enumerate(menu_buttons):
             button_name, button_function = button
             if event.name == 'enter' and event.event_type == 'up' and i == selected_button:
+                sound_menu_enter.play()
                 button_function()
             if i == selected_button:
                 print(f"\033[{(lines//2+i+help_articles_len)};{columns//2-(len(button_name))//2}H>{button_name}<")
@@ -87,6 +99,10 @@ def help_menu():
 
 def restart_menu(score):
     os.system('cls' if os_name == 'nt' else 'clear')
+    # Initialize pygame mixer
+    pygame.mixer.init()
+    sound_menu_roll = pygame.mixer.Sound('sounds/menu-roll.mp3')
+    sound_menu_enter = pygame.mixer.Sound('sounds/menu-enter.mp3')
     menu_buttons = [("Retry", start_game), ("Main menu", main), ("Exit", sys.exit)]
     menu_buttons_len = len(menu_buttons)-1
     selected_button = 0
@@ -116,16 +132,19 @@ def restart_menu(score):
         event = keyboard.read_event()
         columns, lines = shutil.get_terminal_size(fallback=())
         if event.name == 'up' and event.event_type == 'up' or event.name == 'w' and event.event_type  == 'up' or event.name == 'ц' and event.event_type  == 'up':
+            sound_menu_roll.play()
             selected_button-=1
             if selected_button < 0:
                 selected_button = menu_buttons_len
         elif event.name == 'down' and event.event_type == 'up' or event.name == 's' and event.event_type  == 'up' or event.name == 'ы' and event.event_type  == 'up':
+            sound_menu_roll.play()
             selected_button+=1
             if selected_button > menu_buttons_len:
                 selected_button = 0
         for i, button in enumerate(menu_buttons):
             button_name, button_function = button
             if event.name == 'enter' and event.event_type == 'up' and i == selected_button:
+                sound_menu_enter.play()
                 button_function()
             if i == selected_button:
                 print(f"\033[{(lines//2+i)};{columns//2-(len(button_name))//2}H>{button_name}<")
@@ -135,13 +154,16 @@ def restart_menu(score):
 def start_game():
     columns, lines = shutil.get_terminal_size(fallback=())
 
+    pygame.mixer.init()
+    sound_game_apple = pygame.mixer.Sound('sounds/game-apple.mp3')
+
     top_box_side_pos = 0
     bottom_box_side_pos = lines
-    left_box_side_pos = 12
+    left_box_side_pos = int(columns // 2.25 - lines)
     right_bot_side_pos = columns - left_box_side_pos
     min_columns_position = left_box_side_pos + 3
     max_columns_position = right_bot_side_pos - 3
-    min_lines_position = top_box_side_pos + 3
+    min_lines_position = top_box_side_pos + 2
     max_lines_position = bottom_box_side_pos - 1
 
     snake_segments_XY = [(lines//2, columns//2)]
@@ -150,7 +172,7 @@ def start_game():
     apple = "O"
 
     Xspeed = 1
-    Yspeed = 0.6
+    Yspeed = 0.5
 
     score = 0
 
@@ -181,12 +203,15 @@ def start_game():
         if (columns, lines) != shutil.get_terminal_size(fallback=()):
             os.system('cls' if os_name == 'nt' else 'clear')
             columns, lines = shutil.get_terminal_size(fallback=())
+            left_box_side_pos = int(columns // 2.25 - lines)
             right_bot_side_pos = columns - left_box_side_pos
             bottom_box_side_pos = lines
             min_columns_position = left_box_side_pos + 3
             max_columns_position = right_bot_side_pos - 3
             min_lines_position = top_box_side_pos + 2
             max_lines_position = bottom_box_side_pos - 1
+            for i in range (len(snake_segments_XY)):
+                snake_segments_XY[i] = (lines//2+i, columns//2+i)
             for i in range(lines+1):
                 print(f"\033[{i};{left_box_side_pos}H" + "█",end='')
                 print(f"\033[{i};{right_bot_side_pos}H" + "█",end='')
@@ -196,13 +221,14 @@ def start_game():
                 print(f"\033[{top_box_side_pos};{i}H" + "█", end='')
                 print(f"\033[{bottom_box_side_pos};{i}H" + "█", end='')
         if tuple(map(int, snake_segments_XY[0])) == appleXY[0]:
-            appleXY = [(random.randint(min_lines_position, max_lines_position),random.randint(min_columns_position, max_columns_position))]
+            appleXY = [(random.randint(min_lines_position+2, max_lines_position),random.randint(min_columns_position, max_columns_position))]
             # calculate the position of the new segment
             last_segment = snake_segments_XY[-1]
             new_segment = (last_segment[0], last_segment[1]-1)
             # add the new segment to the snake_segments_XY
             snake_segments_XY.append(new_segment)
             score+=1
+            sound_game_apple.play()
         last_segment = snake_segments_XY[-1]
         if last_key_direction == "down":
             if snake_segments_XY[0][0] < max_lines_position:
@@ -226,7 +252,7 @@ def start_game():
             if snake_segments_XY[0][1] <= max_columns_position:
                 for i in range(len(snake_segments_XY)-1, 0, -1):
                     snake_segments_XY[i] = snake_segments_XY[i-1]
-                snake_segments_XY[0] = (snake_segments_XY[0][0], snake_segments_XY[0][1]+1)
+                snake_segments_XY[0] = (snake_segments_XY[0][0], snake_segments_XY[0][1]+Xspeed)
             else:
                 for i in range(len(snake_segments_XY)-1, 0, -1):
                     snake_segments_XY[i] = snake_segments_XY[i-1]
@@ -235,7 +261,7 @@ def start_game():
             if snake_segments_XY[0][1] >= min_columns_position:
                 for i in range(len(snake_segments_XY)-1, 0, -1):
                     snake_segments_XY[i] = snake_segments_XY[i-1]
-                snake_segments_XY[0] = (snake_segments_XY[0][0], snake_segments_XY[0][1]-1)
+                snake_segments_XY[0] = (snake_segments_XY[0][0], snake_segments_XY[0][1]-Xspeed)
             else:
                 for i in range(len(snake_segments_XY)-1, 0, -1):
                     snake_segments_XY[i] = snake_segments_XY[i-1]
@@ -243,12 +269,13 @@ def start_game():
         relative_snake_segments_XY = [(int(x), int(y)) for x, y in snake_segments_XY]
         if len(snake_segments_XY) != len(set(snake_segments_XY)):
             restart_menu(score)
-        print(f"\033[{lines//2};{0}HScore: {score}")
+        score_str = f"Score: {score}"
+        print(f"\033[{lines//2};{left_box_side_pos-(len(score_str)+2)}H{score_str}")
         print(f'\033[{int(last_segment[0])};{last_segment[1]}H ', end='')
         for segment in relative_snake_segments_XY:
             print(f'\033[{int(segment[0])};{segment[1]}H■', end='')
         print(f"\033[{appleXY[0][0]};{appleXY[0][1]}H{apple}", end='')
-        time.sleep(0.05)
+        time.sleep(0.08)
 
 if __name__ == '__main__':
     main()
