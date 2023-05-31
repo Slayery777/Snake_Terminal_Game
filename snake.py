@@ -31,7 +31,7 @@ def main(score = None):
             print(f"\033[{(lines//2+i)};{columns//2-(len(button_name))//2}H {button_name} ",end='')
     print(f"\033[{(lines-2)};{0}H" + "Menu Controls:",end='')
     print(f"\033[{(lines-1)};{0}H" + "Arrow UP, Arrow DOWN, W, S, ENTER",end='')
-    print(f"\033[{(lines)};{0}H" + "Snake v0.5 (2023)",end='')
+    print(f"\033[{(lines)};{0}H" + "Snake v0.65 (2023)",end='')
     sys.stdout.flush()
     while(True):
         event = keyboard.read_event()
@@ -156,7 +156,9 @@ def start_game():
 
     pygame.mixer.init()
     sound_game_apple = pygame.mixer.Sound('sounds/game-apple.mp3')
-
+    sound_game_fail = pygame.mixer.Sound('sounds/game-fail.mp3')
+    sound_game = pygame.mixer.Sound('sounds/game.mp3')
+    sound_game.play(-1)
     top_box_side_pos = 0
     bottom_box_side_pos = lines
     left_box_side_pos = int(columns // 2.25 - lines)
@@ -268,6 +270,8 @@ def start_game():
                 snake_segments_XY[0] = (snake_segments_XY[0][0],max_columns_position)
         relative_snake_segments_XY = [(int(x), int(y)) for x, y in snake_segments_XY]
         if len(snake_segments_XY) != len(set(snake_segments_XY)):
+            sound_game.stop()
+            sound_game_fail.play()
             restart_menu(score)
         score_str = f"Score: {score}"
         print(f"\033[{lines//2};{left_box_side_pos-(len(score_str)+2)}H{score_str}")
